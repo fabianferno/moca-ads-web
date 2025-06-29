@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "extension-1",
+  "description": "An Extension.js example.",
+  "version": "0.0.1",
+  "author": {
+    "name": "Your Name",
+    "email": "your@email.com",
+    "url": "https://yourwebsite.com"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "@mocanetwork/air-credential-sdk": "^0.0.7-beta.1",
+    "@mocanetwork/airkit": "^1.4.2",
+    "@mocanetwork/airkit-connector": "^1.4.2",
+    "@tanstack/react-query": "^5.81.5",
+    "tailwind-merge": "^3.3.1",
+    "jose": "^6.0.11",
+    "wagmi": "^2.15.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.3",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.5",
+    "tailwindcss": "^4.1.3",
+    "typescript": "5.3.3",
+    "extension": "^2.0.0-rc.37"
+  },
+  "scripts": {
+    "dev": "extension dev",
+    "start": "extension start",
+    "build": "extension build"
+  }
+}
