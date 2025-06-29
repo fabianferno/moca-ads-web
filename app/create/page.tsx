@@ -2,61 +2,126 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ArrowLeft, Eye } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Checkbox } from "@/components/ui/checkbox"
+import { useAccount } from "wagmi"
+import { useCreateCampaign, useMinCampaignBudget, formatMocaAmount, credentialTypeNames, type CredentialType } from "@/components/hooks/useMocaAds"
+import { toast } from "sonner";
+import { Header } from "@/components/Header";
 
 export default function CreateAdPage() {
+  const { address, isConnected } = useAccount()
+  const { data: minBudget } = useMinCampaignBudget()
+  const { createCampaign, isPending, isConfirming, isSuccess, error } = useCreateCampaign()
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    targetUrl: "",
     imageUrl: "",
     budget: "",
-    duration: "",
+    duration: "7", // days
     adType: "banner",
     targeting: {
       countries: "",
       categories: "",
       keywords: "",
     },
+    targetCredentials: [] as CredentialType[],
   })
 
   const [preview, setPreview] = useState(false)
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Campaign created successfully!")
+      // Reset form
+      setFormData({
+        title: "",
+        description: "",
+        imageUrl: "",
+        budget: "",
+        duration: "7",
+        adType: "banner",
+        targeting: {
+          countries: "",
+          categories: "",
+          keywords: "",
+        },
+        targetCredentials: [],
+      })
+    }
+  }, [isSuccess])
+
+  useEffect(() => {
+    if (error) {
+      toast.error(`Error creating campaign: ${error.message}`)
+    }
+  }, [error])
+
+  const handleCredentialToggle = (credential: CredentialType, checked: boolean) => {
+    if (checked) {
+      setFormData(prev => ({
+        ...prev,
+        targetCredentials: [...prev.targetCredentials, credential]
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        targetCredentials: prev.targetCredentials.filter(c => c !== credential)
+      }))
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Simulate ad creation
-    alert("Ad created successfully! Smart contract deployed.")
+
+    if (!isConnected) {
+      toast.error("Please connect your wallet first")
+      return
+    }
+
+    if (!formData.title || !formData.description || !formData.budget || !formData.duration) {
+      toast.error("Please fill in all required fields")
+      return
+    }
+
+    const minBudgetEth = minBudget && typeof minBudget === 'bigint' ? formatMocaAmount(minBudget) : '0.01'
+    if (parseFloat(formData.budget) < parseFloat(minBudgetEth)) {
+      toast.error(`Minimum budget is ${minBudgetEth} MOCA`)
+      return
+    }
+
+    // Create ad content hash (simplified - in production, upload to IPFS)
+    const adContent = {
+      title: formData.title,
+      description: formData.description,
+      imageUrl: formData.imageUrl,
+      adType: formData.adType,
+    }
+    const adContentHash = btoa(JSON.stringify(adContent)) // Simple base64 encoding
+
+    // Convert duration from days to seconds
+    const durationInSeconds = BigInt(parseInt(formData.duration) * 24 * 60 * 60)
+
+    createCampaign(
+      formData.title,
+      durationInSeconds,
+      formData.targetCredentials,
+      adContentHash,
+      formData.budget
+    )
   }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
-        <div className="container flex h-20 items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center">
-              <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
-              <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
-              <span className="font-black text-2xl tracking-tighter ml-4 text-white">ADBLOCK3</span>
-            </Link>
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all inline-flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              BACK
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <main className="container py-12">
         <div className="max-w-4xl mx-auto">
@@ -101,20 +166,7 @@ export default function CreateAdPage() {
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="targetUrl" className="text-lg font-bold">
-                        TARGET URL
-                      </Label>
-                      <Input
-                        id="targetUrl"
-                        type="url"
-                        value={formData.targetUrl}
-                        onChange={(e) => setFormData({ ...formData, targetUrl: e.target.value })}
-                        placeholder="https://your-website.com"
-                        className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
-                        required
-                      />
-                    </div>
+
 
                     <div className="space-y-2">
                       <Label htmlFor="imageUrl" className="text-lg font-bold">
@@ -172,12 +224,37 @@ export default function CreateAdPage() {
                   </div>
 
                   <div className="space-y-6">
+                    <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">TARGET CREDENTIALS</h2>
+                    <p className="font-mono text-sm text-gray-600">
+                      Select user credentials to target (optional). Leave empty to target all users.
+                    </p>
+                    <div className="grid grid-cols-2 gap-4">
+                      {Object.entries(credentialTypeNames).map(([value, name]) => {
+                        const credentialValue = parseInt(value) as CredentialType
+                        return (
+                          <div key={value} className="flex items-center space-x-3">
+                            <Checkbox
+                              id={`credential-${value}`}
+                              checked={formData.targetCredentials.includes(credentialValue)}
+                              onCheckedChange={(checked) => handleCredentialToggle(credentialValue, checked as boolean)}
+                              className="h-5 w-5 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
+                            />
+                            <Label htmlFor={`credential-${value}`} className="font-mono text-sm">
+                              {name}
+                            </Label>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
                     <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">BUDGET & DURATION</h2>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="budget" className="text-lg font-bold">
-                          BUDGET (ETH)
+                          BUDGET (MOCA)
                         </Label>
                         <Input
                           id="budget"
@@ -185,10 +262,13 @@ export default function CreateAdPage() {
                           step="0.001"
                           value={formData.budget}
                           onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                          placeholder="0.1"
+                          placeholder={minBudget && typeof minBudget === 'bigint' ? formatMocaAmount(minBudget) : "0.01"}
                           className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
                           required
                         />
+                        <p className="text-sm font-mono text-gray-600">
+                          Minimum: {minBudget && typeof minBudget === 'bigint' ? formatMocaAmount(minBudget) : '0.01'} MOCA
+                        </p>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="duration" className="text-lg font-bold">
@@ -218,9 +298,10 @@ export default function CreateAdPage() {
                     </button>
                     <button
                       type="submit"
-                      className="bg-red-600 text-white border-4 border-black px-6 py-3 font-bold text-lg shadow-brutal hover:translate-y-1 hover:shadow-none transition-all flex-1"
+                      disabled={!isConnected || isPending || isConfirming}
+                      className="bg-red-600 text-white border-4 border-black px-6 py-3 font-bold text-lg shadow-brutal hover:translate-y-1 hover:shadow-none transition-all flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      DEPLOY AD CAMPAIGN
+                      {isPending ? "CONFIRMING..." : isConfirming ? "DEPLOYING..." : "DEPLOY AD CAMPAIGN"}
                     </button>
                   </div>
                 </form>
@@ -233,7 +314,7 @@ export default function CreateAdPage() {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span className="font-mono">Budget:</span>
-                      <span className="font-bold">{formData.budget || "0"} ETH</span>
+                      <span className="font-bold">{formData.budget || "0"} MOCA</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="font-mono">Duration:</span>
@@ -271,7 +352,6 @@ export default function CreateAdPage() {
                         )}
                         <h4 className="text-lg font-bold mb-2">{formData.title}</h4>
                         <p className="font-mono text-sm mb-4">{formData.description}</p>
-                        <div className="text-xs font-mono text-gray-600">{formData.targetUrl}</div>
                       </div>
                     </div>
                   </div>
