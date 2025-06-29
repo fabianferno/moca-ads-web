@@ -1,12 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ArrowLeft, Copy, Check, Globe, Shield, Coins } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAccount } from "wagmi"
+import { useRegisterWebsite, useWebsite } from "@/components/hooks/useMocaAds"
+import { toast } from "sonner"
 
 export default function RegisterPropertyPage() {
+  const { address, isConnected } = useAccount()
+  const { registerWebsite, isPending, isConfirming, isSuccess, error } = useRegisterWebsite()
+
   const [step, setStep] = useState(1)
   const [domain, setDomain] = useState("")
   const [txtRecord, setTxtRecord] = useState("")
@@ -14,12 +20,38 @@ export default function RegisterPropertyPage() {
   const [isVerified, setIsVerified] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const generateTxtRecord = () => {
-    if (domain) {
-      const record = `adblock3-verify=${Math.random().toString(36).substring(2, 15)}-${Date.now()}`
-      setTxtRecord(record)
-      setStep(2)
+  // Check if domain is already registered
+  const { data: existingWebsite } = useWebsite(domain)
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Website registered successfully!")
+      setIsVerified(true)
+      setStep(3)
     }
+  }, [isSuccess])
+
+  useEffect(() => {
+    if (error) {
+      toast.error(`Error registering website: ${error.message}`)
+      setIsVerifying(false)
+    }
+  }, [error])
+
+  const generateTxtRecord = () => {
+    if (!domain) {
+      toast.error("Please enter a domain first")
+      return
+    }
+
+    if (existingWebsite && typeof existingWebsite === 'object' && 'owner' in existingWebsite && existingWebsite.owner !== "0x0000000000000000000000000000000000000000") {
+      toast.error("This domain is already registered")
+      return
+    }
+
+    const record = `moca-ads-verify=${Math.random().toString(36).substring(2, 15)}-${Date.now()}`
+    setTxtRecord(record)
+    setStep(2)
   }
 
   const copyToClipboard = () => {
@@ -29,13 +61,28 @@ export default function RegisterPropertyPage() {
   }
 
   const verifyDomain = async () => {
+    if (!isConnected) {
+      toast.error("Please connect your wallet first")
+      return
+    }
+
     setIsVerifying(true)
-    // Simulate DNS verification
-    setTimeout(() => {
+
+    // In a real implementation, you would verify the DNS TXT record here
+    // For now, we'll simulate DNS verification and then register
+    try {
+      // Simulate DNS verification delay
+      await new Promise(resolve => setTimeout(resolve, 2000))
+
+      // Extract clean domain name
+      const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]
+
+      // Register the website on the blockchain
+      registerWebsite(cleanDomain)
+    } catch (err) {
       setIsVerifying(false)
-      setIsVerified(true)
-      setStep(3)
-    }, 3000)
+      toast.error("DNS verification failed. Please ensure the TXT record is properly set.")
+    }
   }
 
   return (
@@ -47,7 +94,7 @@ export default function RegisterPropertyPage() {
             <Link href="/" className="flex items-center">
               <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
               <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
-              <span className="font-black text-2xl tracking-tighter ml-4 text-white">ADBLOCK3</span>
+              <span className="font-black text-2xl tracking-tighter ml-4 text-white">MOCA ADS</span>
             </Link>
           </div>
           <nav className="flex items-center gap-4">
@@ -198,10 +245,10 @@ export default function RegisterPropertyPage() {
                     </button>
                     <button
                       onClick={verifyDomain}
-                      disabled={isVerifying}
+                      disabled={isVerifying || isPending || isConfirming || !isConnected}
                       className="bg-blue-600 text-white border-4 border-black px-8 py-4 font-bold text-xl shadow-brutal hover:translate-y-1 hover:shadow-none transition-all disabled:opacity-50 flex-1"
                     >
-                      {isVerifying ? "VERIFYING..." : "VERIFY DOMAIN"}
+                      {isVerifying ? "VERIFYING DNS..." : isPending ? "CONFIRMING..." : isConfirming ? "REGISTERING..." : "VERIFY DOMAIN"}
                     </button>
                   </div>
                 </div>
@@ -256,9 +303,9 @@ export default function RegisterPropertyPage() {
                   <div className="bg-white border-4 border-black p-6">
                     <h3 className="text-xl font-black uppercase mb-4">INTEGRATION CODE</h3>
                     <div className="bg-gray-100 border-2 border-black p-4 font-mono text-sm">
-                      <code>{`<script src="https://cdn.adblock3.com/ads.js"></script>
+                      <code>{`<script src="https://cdn.mocaads.com/ads.js"></script>
 <script>
-  AdBlock3.init({
+  MocaAds.init({
     domain: "${domain}",
     verification: "${txtRecord.split("=")[1]}"
   });

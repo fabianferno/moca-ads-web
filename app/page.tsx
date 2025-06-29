@@ -1,35 +1,61 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowRight, Zap, Shield, Globe, Coins } from "lucide-react"
+import { Header } from "@/components/Header"
+import { useActiveCampaigns, useRegisteredDomains, useContractBalance, formatMocaAmount } from "@/components/hooks/useMocaAds"
+
+function LiveStats() {
+  const { data: activeCampaigns, isLoading: campaignsLoading } = useActiveCampaigns()
+  const { data: registeredDomains, isLoading: domainsLoading } = useRegisteredDomains()
+  const { data: contractBalance, isLoading: balanceLoading } = useContractBalance()
+
+  const activeCampaignCount = Array.isArray(activeCampaigns) ? activeCampaigns.length : 0
+  const publisherCount = Array.isArray(registeredDomains) ? registeredDomains.length : 0
+  const totalRewards = contractBalance && typeof contractBalance === 'bigint' ? formatMocaAmount(contractBalance) : '0'
+
+  return (
+    <div className="bg-black border-8 border-black p-8 shadow-brutal-inverse">
+      <div className="space-y-6">
+        <div className="bg-yellow-500 border-4 border-white p-6">
+          <h3 className="text-2xl font-black uppercase">LIVE STATS</h3>
+        </div>
+        <div className="grid grid-cols-2 gap-4 text-white">
+          <div className="bg-blue-600 border-4 border-white p-4">
+            <div className="text-3xl font-black">
+              {campaignsLoading ? '...' : activeCampaignCount}
+            </div>
+            <div className="text-sm font-mono">ACTIVE ADS</div>
+          </div>
+          <div className="bg-red-600 border-4 border-white p-4">
+            <div className="text-3xl font-black">
+              {domainsLoading ? '...' : publisherCount}
+            </div>
+            <div className="text-sm font-mono">PUBLISHERS</div>
+          </div>
+          <div className="bg-cyan-400 text-black border-4 border-white p-4">
+            <div className="text-3xl font-black">
+              {balanceLoading ? '...' : `${parseFloat(totalRewards).toFixed(2)} MOCA`}
+            </div>
+            <div className="text-sm font-mono">TOTAL REWARDS</div>
+          </div>
+          <div className="bg-fuchsia-500 border-4 border-white p-4">
+            <div className="text-3xl font-black">99.9%</div>
+            <div className="text-sm font-mono">UPTIME</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function LandingPage() {
+
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
-        <div className="container flex h-20 items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center">
-              <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
-              <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
-              <span className="font-black text-2xl tracking-tighter ml-4 text-white">ADBLOCK3</span>
-            </div>
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link
-              href="/ads"
-              className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all"
-            >
-              ALL ADS
-            </Link>
-            <Link
-              href="/create"
-              className="bg-yellow-500 border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all"
-            >
-              CREATE AD
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <main>
         {/* Hero Section */}
@@ -38,14 +64,15 @@ export default function LandingPage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h1 className="text-7xl font-black tracking-tighter uppercase leading-none">
-                  DECENTRALIZED
+                  MOCA's OPEN
                   <br />
                   <span className="text-blue-600">ADVERTISING</span>
                   <br />
                   PROTOCOL
                 </h1>
                 <p className="text-2xl font-mono">
-                  Connect advertisers directly with publishers. No middlemen. Pure web3.
+                  Connect advertisers directly with publishers. No middlemen. Pure web3. <br />
+                  <span className="text-blue-600 font-bold text-3xl hover:text-red-600 transition-all hover:underline cursor-pointer">Monetize your credentials.</span>
                 </p>
               </div>
 
@@ -66,31 +93,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="bg-black border-8 border-black p-8 shadow-brutal-inverse">
-              <div className="space-y-6">
-                <div className="bg-yellow-500 border-4 border-white p-6">
-                  <h3 className="text-2xl font-black uppercase">LIVE STATS</h3>
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-white">
-                  <div className="bg-blue-600 border-4 border-white p-4">
-                    <div className="text-3xl font-black">1,247</div>
-                    <div className="text-sm font-mono">ACTIVE ADS</div>
-                  </div>
-                  <div className="bg-red-600 border-4 border-white p-4">
-                    <div className="text-3xl font-black">892</div>
-                    <div className="text-sm font-mono">PUBLISHERS</div>
-                  </div>
-                  <div className="bg-cyan-400 text-black border-4 border-white p-4">
-                    <div className="text-3xl font-black">$2.4M</div>
-                    <div className="text-sm font-mono">TOTAL REWARDS</div>
-                  </div>
-                  <div className="bg-fuchsia-500 border-4 border-white p-4">
-                    <div className="text-3xl font-black">99.9%</div>
-                    <div className="text-sm font-mono">UPTIME</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <LiveStats />
           </div>
         </section>
 
@@ -98,7 +101,7 @@ export default function LandingPage() {
         <section className="container py-24">
           <div className="space-y-16">
             <div className="text-center space-y-4">
-              <h2 className="text-5xl font-black tracking-tighter uppercase">WHY CHOOSE ADBLOCK3?</h2>
+              <h2 className="text-5xl font-black tracking-tighter uppercase">WHY CHOOSE MOCA ADS?</h2>
               <p className="text-xl font-mono max-w-2xl mx-auto">
                 Revolutionary advertising protocol built on blockchain technology
               </p>

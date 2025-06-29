@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
+import { Providers } from '@/components/providers'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: 'Moca Ads',
+  description: 'Moca Ads',
+  generator: 'Moca Ads',
 }
 
 export default function RootLayout({
@@ -14,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Providers partnerId="8c8cd8b3-e234-429c-90ba-c41357561e1b">
+          {children}
+        </Providers>
+      </body>
     </html>
   )
 }

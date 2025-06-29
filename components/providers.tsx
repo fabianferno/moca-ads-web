@@ -1,0 +1,32 @@
+"use client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useMemo, type FC, type ReactNode } from "react";
+import { WagmiProvider } from "wagmi";
+import { LogProvider } from "@/components/contexts/LogProvider";
+import { PartnerContext } from "@/components/contexts/PartnerContext";
+import { getConfig } from "@/components/utils/wagmi";
+import { Toaster } from "@/components/ui/sonner"
+
+
+const queryClient = new QueryClient();
+
+export const Providers: FC<{
+    children: ReactNode;
+    partnerId: string;
+}> = ({ children, partnerId }) => {
+    const config = useMemo(() => {
+        return getConfig(partnerId);
+    }, [partnerId]);
+    return (
+        <PartnerContext.Provider value={{ partnerId }}>
+            <LogProvider>
+                <WagmiProvider config={config}>
+                    <QueryClientProvider client={queryClient}>
+                        {children}
+                        <Toaster />
+                    </QueryClientProvider>
+                </WagmiProvider>
+            </LogProvider>
+        </PartnerContext.Provider>
+    );
+};
