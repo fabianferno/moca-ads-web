@@ -1,33 +1,52 @@
-# 🚀 MOCA Ads - Decentralized Advertising Protocol
+#  MOCA Ads - Monetize Your Credentials
 
 A revolutionary Web3 advertising platform built on the MOCA blockchain that connects advertisers directly with publishers using privacy-preserving credential-based targeting.
 
-## ✨ Features
+![image](https://github.com/user-attachments/assets/5bfaf6d3-ee22-42a6-bc40-d978854f82e0)
 
-### 🎯 **Privacy-First Advertising**
+![image](https://github.com/user-attachments/assets/3fde0f17-50b0-4ecd-92e5-453f6c125c68)
+
+![image](https://github.com/user-attachments/assets/4e15c058-824d-4b89-9377-1e12d21953c7)
+
+
+##  Features
+
+### **Privacy-First Advertising**
 - **Credential-based targeting** instead of personal data collection
 - **Zero-knowledge proofs** for user verification
 - **GDPR-compliant** advertising without cookies or tracking
 
-### 💰 **Direct Monetization**
+### **Direct Monetization**
 - **No middlemen** - advertisers pay publishers directly
 - **Smart contract escrow** ensures guaranteed payments
 - **Real-time payouts** in MOCA tokens
 - **Transparent revenue sharing**: 60% users, 25% publishers, 15% protocol
 
-### 🛡️ **Blockchain Security**
+### **Blockchain Security**
 - **Smart contract automation** for campaign management
 - **DNS verification** for domain ownership
 - **Fraud-proof** impression tracking
 - **Immutable** payment records
 
-### 🌐 **Multi-Platform Integration**
+### **Multi-Platform Integration**
 - **Chrome extension** support for verification data
 - **Cross-domain** ad serving
 - **RESTful APIs** for external integrations
 - **Mobile-responsive** dashboard
 
-## 🏗️ Architecture
+
+![image](https://github.com/user-attachments/assets/0697a163-82c6-49f9-9096-4316d6ba603e)
+
+![image](https://github.com/user-attachments/assets/91c49a15-3323-4733-a12b-b28b8ba5964b)
+
+![image](https://github.com/user-attachments/assets/2023e181-aa25-4a7d-be69-634aaf5fe4b4)
+
+![image](https://github.com/user-attachments/assets/8642badf-8e27-4229-8fc4-40f3e3b24c91)
+
+![image](https://github.com/user-attachments/assets/ed2f4ebb-85f0-42b7-ad9d-7d4ba43777b0)
+
+
+##  Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
