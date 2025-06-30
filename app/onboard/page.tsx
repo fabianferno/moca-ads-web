@@ -14,6 +14,7 @@ import {
 } from "@/utils/verificationStorage";
 import { Header } from "@/components/Header";
 import { useUserStats, useClaimUserRewards, formatMocaAmount } from "@/hooks/useMocaAds";
+import Link from "next/link";
 
 export default function OnboardPage() {
     const { airService, isLoggedIn } = useAppContext();
@@ -177,6 +178,44 @@ export default function OnboardPage() {
                         <p className="text-xl font-mono max-w-4xl mx-auto">Verify your credentials with the following programs to unlock personalized ad experiences and get paid for your views</p>
                     </div>
 
+                    {/* How It Works Section */}
+                    <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white border-8 border-black p-8 shadow-brutal">
+                        <div className="text-center space-y-6">
+                            <h2 className="text-4xl font-black uppercase">🚀 How You Earn FREE MONEY 💰</h2>
+                            <div className="grid gap-6 md:grid-cols-4">
+                                <div className="bg-white text-black border-4 border-black p-4 shadow-brutal">
+                                    <div className="text-4xl mb-2">1️⃣</div>
+                                    <h3 className="text-xl font-black uppercase mb-2">Connect Wallet</h3>
+                                    <p className="text-sm font-mono">Link your web3 wallet to get started</p>
+                                </div>
+                                <div className="bg-white text-black border-4 border-black p-4 shadow-brutal">
+                                    <div className="text-4xl mb-2">2️⃣</div>
+                                    <h3 className="text-xl font-black uppercase mb-2">Verify Identity</h3>
+                                    <p className="text-sm font-mono">Complete secure verification process</p>
+                                </div>
+                                <div className="bg-white text-black border-4 border-black p-4 shadow-brutal">
+                                    <div className="text-4xl mb-2">3️⃣</div>
+                                    <h3 className="text-xl font-black uppercase mb-2">Browse Web</h3>
+                                    <p className="text-sm font-mono">See targeted ads while browsing</p>
+                                </div>
+                                <div className="bg-white text-black border-4 border-black p-4 shadow-brutal">
+                                    <div className="text-4xl mb-2">4️⃣</div>
+                                    <h3 className="text-xl font-black uppercase mb-2">Earn Rewards</h3>
+                                    <p className="text-sm font-mono">Get paid for your attention</p>
+                                </div>
+                            </div>
+                            <div className="bg-yellow-500 text-black border-4 border-black p-6 shadow-brutal mx-auto max-w-3xl">
+                                <h3 className="text-2xl font-black uppercase mb-3">🔥 Install Our Chrome Extension 🔥</h3>
+                                <p className="text-lg font-mono mb-4">
+                                    Once you install our Chrome extension and complete verification, you&apos;ll automatically start earning MOCA tokens just by browsing the web! Every ad you see = FREE MONEY in your wallet! 💸
+                                </p>
+                                <Link target="_blank" href="https://github.com/fabianferno/moca-ads-extension" className="bg-red-600 text-white border-4 border-black px-8 py-3 font-black text-lg shadow-brutal hover:translate-y-1 hover:shadow-none transition-all uppercase">
+                                    INSTALL EXTENSION
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* User Rewards Section */}
                     <div className="grid gap-6 md:grid-cols-4">
                         <div className="bg-green-500 text-white border-8 border-black p-6 shadow-brutal">
@@ -188,7 +227,7 @@ export default function OnboardPage() {
                         <div className="bg-blue-600 text-white border-8 border-black p-6 shadow-brutal">
                             <div className="space-y-2">
                                 <div className="text-3xl font-black">{displayStats.totalViews.toString()}</div>
-                                <div className="text-sm font-mono uppercase">Total Views</div>
+                                <div className="text-sm font-mono uppercase">Total Ad Views</div>
                             </div>
                         </div>
                         <div className="bg-purple-600 text-white border-8 border-black p-6 shadow-brutal">
@@ -258,8 +297,6 @@ export default function OnboardPage() {
                             <div className="font-mono">{errorMessage || claimError?.message}</div>
                         </div>
                     )}
-
-
 
                     {/* Verification Cards */}
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
