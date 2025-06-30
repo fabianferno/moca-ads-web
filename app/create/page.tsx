@@ -283,6 +283,11 @@ export default function CreateAdPage() {
                               </div>
                             )
                           })}
+
+                          <div className="mt-6 p-4 bg-gray-100 border-4 border-black">
+                            <h3 className="text-lg font-black uppercase text-gray-700">MORE CREDENTIALS COMING SOON</h3>
+                            <p className="font-mono text-sm text-gray-600">Custom verification, identity, certifications, academic credentials</p>
+                          </div>
                         </div>
                       </div>
                     </div>

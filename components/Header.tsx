@@ -88,13 +88,13 @@ export const Header = () => {
                     </Link>
                     <Link
                         href="/onboard"
-                        className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all"
+                        className="bg-green-400 text-black border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all"
                     >
-                        ONBOARD
+                        FREE MONEY
                     </Link>
                     <Link
                         href="/operator"
-                        className="bg-red-500 text-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all flex items-center gap-2"
+                        className="bg-white text-black border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all flex items-center gap-2"
                     >
                         <Settings className="h-4 w-4" />
                         OPERATOR
