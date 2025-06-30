@@ -14,14 +14,13 @@ import {
     useMinCampaignBudget,
     useFixedCostPerView,
     formatMocaAmount
-} from "@/components/hooks/useMocaAds";
+} from "@/hooks/useMocaAds";
 import { BatchRewardsManager } from "@/components/BatchRewardsManager";
 import {
     BarChart3,
     DollarSign,
     Globe,
     Settings,
-    Users,
     TrendingUp,
     Zap,
     FileText

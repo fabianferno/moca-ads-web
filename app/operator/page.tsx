@@ -1,15 +1,14 @@
 "use client";
 
-import { useAccount } from "wagmi";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { OperatorDashboard } from "@/components/OperatorDashboard";
-import { useIsOperator } from "@/hooks/useMocaAds";
+import { useIsOperator, useUserAddress, } from "@/hooks/useMocaAds";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function OperatorPage() {
-    const { address, isConnected } = useAccount();
+    const { address, isConnected } = useUserAddress();
     const router = useRouter();
     const isOperator = useIsOperator();
 

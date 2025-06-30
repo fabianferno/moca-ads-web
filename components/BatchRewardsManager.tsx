@@ -6,11 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
     useBatchUpdateRewards,
-    useActiveCampaigns,
-    useRegisteredDomains,
-    formatMocaAmount,
     type BatchReward
-} from "@/components/hooks/useMocaAds";
+} from "@/hooks/useMocaAds";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -22,7 +19,6 @@ import {
     CheckCircle,
     Loader2,
     FileText,
-    Users
 } from "lucide-react";
 import { isAddress } from "viem";
 
@@ -43,9 +39,6 @@ export function BatchRewardsManager() {
         views: "",
         campaignId: ""
     });
-
-    const { data: activeCampaigns } = useActiveCampaigns();
-    const { data: registeredDomains } = useRegisteredDomains();
 
     const {
         batchUpdateRewards,
@@ -290,7 +283,7 @@ export function BatchRewardsManager() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-3 max-h-96 overflow-y-auto">
-                            {entries.map((entry, index) => (
+                            {entries.map((entry) => (
                                 <div
                                     key={entry.id}
                                     className="flex items-center justify-between p-3 bg-gray-50 border-2 border-black"
