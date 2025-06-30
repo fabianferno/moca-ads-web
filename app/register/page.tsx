@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, Copy, Check, Globe, Shield, Coins } from "lucide-react"
+import { Copy, Check, Globe, Shield, Coins } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAccount } from "wagmi"
-import { useRegisterWebsite, useWebsite } from "@/components/hooks/useMocaAds"
+import { useRegisterWebsite, useWebsite, useUserAddress } from "@/hooks/useMocaAds"
 import { toast } from "sonner"
+import { Header } from "@/components/Header"
 
 export default function RegisterPropertyPage() {
-  const { address, isConnected } = useAccount()
+  const { isConnected } = useUserAddress()
   const { registerWebsite, isPending, isConfirming, isSuccess, error } = useRegisterWebsite()
 
   const [step, setStep] = useState(1)
@@ -80,6 +80,7 @@ export default function RegisterPropertyPage() {
       // Register the website on the blockchain
       registerWebsite(cleanDomain)
     } catch (err) {
+      console.error(err)
       setIsVerifying(false)
       toast.error("DNS verification failed. Please ensure the TXT record is properly set.")
     }
@@ -88,26 +89,7 @@ export default function RegisterPropertyPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
-        <div className="container flex h-20 items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center">
-              <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
-              <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
-              <span className="font-black text-2xl tracking-tighter ml-4 text-white">MOCA ADS</span>
-            </Link>
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all inline-flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              BACK
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <main className="container py-12">
         <div className="max-w-4xl mx-auto">
@@ -155,7 +137,7 @@ export default function RegisterPropertyPage() {
                     STEP 1: ENTER YOUR DOMAIN
                   </h2>
                   <p className="text-lg font-mono">
-                    Enter the domain where you want to display ads and earn rewards. We'll generate a unique TXT record
+                    Enter the domain where you want to display ads and earn rewards. We&apos;ll generate a unique TXT record
                     for verification.
                   </p>
 
@@ -190,7 +172,7 @@ export default function RegisterPropertyPage() {
                     STEP 2: ADD DNS TXT RECORD
                   </h2>
                   <p className="text-lg font-mono">
-                    Add the following TXT record to your domain's DNS settings to verify ownership.
+                    Add the following TXT record to your domain&apos;s DNS settings to verify ownership.
                   </p>
 
                   <div className="bg-black text-white border-4 border-black p-6 shadow-brutal-inverse">
@@ -232,7 +214,7 @@ export default function RegisterPropertyPage() {
                       <li>2. Navigate to DNS management section</li>
                       <li>3. Add a new TXT record with the values above</li>
                       <li>4. Save changes and wait for propagation (up to 24 hours)</li>
-                      <li>5. Click "VERIFY DOMAIN" below to check</li>
+                      <li>5. Click &quot;VERIFY DOMAIN&quot; below to check</li>
                     </ol>
                   </div>
 
@@ -268,7 +250,7 @@ export default function RegisterPropertyPage() {
                   </div>
 
                   <div className="bg-black text-white border-4 border-black p-8 shadow-brutal-inverse">
-                    <h3 className="text-2xl font-black uppercase border-b-4 border-white pb-2 mb-6">WHAT'S NEXT?</h3>
+                    <h3 className="text-2xl font-black uppercase border-b-4 border-white pb-2 mb-6">WHAT&apos;S NEXT?</h3>
                     <div className="grid gap-6 md:grid-cols-3 text-left">
                       <div className="space-y-3">
                         <div className="h-12 w-12 bg-red-600 border-2 border-white flex items-center justify-center">
@@ -312,7 +294,7 @@ export default function RegisterPropertyPage() {
 </script>`}</code>
                     </div>
                     <p className="font-mono text-sm mt-4">
-                      Add this code to your website's &lt;head&gt; section to start displaying ads.
+                      Add this code to your website&apos;s &lt;head&gt; section to start displaying ads.
                     </p>
                   </div>
 

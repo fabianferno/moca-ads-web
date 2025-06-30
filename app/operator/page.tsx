@@ -3,9 +3,10 @@
 import { useAccount } from "wagmi";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Header } from "@/components/Header";
 import { OperatorDashboard } from "@/components/OperatorDashboard";
-import { useIsOperator } from "@/components/hooks/useMocaAds";
+import { useIsOperator } from "@/hooks/useMocaAds";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function OperatorPage() {
     const { address, isConnected } = useAccount();
@@ -35,7 +36,27 @@ export default function OperatorPage() {
     if (!isConnected) {
         return (
             <div className="min-h-screen bg-background">
-                <Header />
+                {/* Navigation */}
+                <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
+                    <div className="container flex h-20 items-center justify-between">
+                        <div className="flex items-center gap-6">
+                            <Link href="/" className="flex items-center">
+                                <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
+                                <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
+                                <span className="font-black text-2xl tracking-tighter ml-4 text-white">MOCA ADS</span>
+                            </Link>
+                        </div>
+                        <nav className="flex items-center gap-4">
+                            <Link
+                                href="/"
+                                className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all inline-flex items-center gap-2"
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                                BACK
+                            </Link>
+                        </nav>
+                    </div>
+                </header>
                 <main className="container py-12">
                     <div className="max-w-2xl mx-auto text-center">
                         <div className="bg-yellow-100 border-4 border-black p-8 shadow-brutal">
@@ -53,7 +74,27 @@ export default function OperatorPage() {
     if (!isAuthorizedOperator) {
         return (
             <div className="min-h-screen bg-background">
-                <Header />
+                {/* Navigation */}
+                <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
+                    <div className="container flex h-20 items-center justify-between">
+                        <div className="flex items-center gap-6">
+                            <Link href="/" className="flex items-center">
+                                <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
+                                <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
+                                <span className="font-black text-2xl tracking-tighter ml-4 text-white">MOCA ADS</span>
+                            </Link>
+                        </div>
+                        <nav className="flex items-center gap-4">
+                            <Link
+                                href="/"
+                                className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all inline-flex items-center gap-2"
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                                BACK
+                            </Link>
+                        </nav>
+                    </div>
+                </header>
                 <main className="container py-12">
                     <div className="max-w-2xl mx-auto text-center">
                         <div className="bg-red-100 border-4 border-black p-8 shadow-brutal">
@@ -73,7 +114,27 @@ export default function OperatorPage() {
 
     return (
         <div className="min-h-screen bg-background">
-            <Header />
+            {/* Navigation */}
+            <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
+                <div className="container flex h-20 items-center justify-between">
+                    <div className="flex items-center gap-6">
+                        <Link href="/" className="flex items-center">
+                            <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
+                            <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
+                            <span className="font-black text-2xl tracking-tighter ml-4 text-white">MOCA ADS</span>
+                        </Link>
+                    </div>
+                    <nav className="flex items-center gap-4">
+                        <Link
+                            href="/"
+                            className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all inline-flex items-center gap-2"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            BACK
+                        </Link>
+                    </nav>
+                </div>
+            </header>
             <main className="container py-8">
                 <div className="mb-8">
                     <h1 className="text-5xl font-black mb-4 text-center">

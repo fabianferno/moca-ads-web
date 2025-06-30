@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
+import { useMemo, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, Plus, TrendingUp, Coins, Eye } from "lucide-react"
-import { useAccount } from "wagmi"
-import { useActiveCampaigns, useCampaign, formatMocaAmount, useUserStats, useUserClaimableRewards, useClaimUserRewards, useWithdrawCampaignBudget, type Campaign } from "@/components/hooks/useMocaAds"
+import { ArrowLeft, Plus, Coins } from "lucide-react"
+import { useActiveCampaigns, useCampaign, formatMocaAmount, useUserStats, useUserClaimableRewards, useClaimUserRewards, useWithdrawCampaignBudget } from "@/hooks/useMocaAds"
 import { toast } from "sonner"
+import { useAppContext } from "@/contexts/AppContext"
+import { Header } from "@/components/Header"
 
 // Helper function to decode ad content from hash
 const decodeAdContent = (hash: string) => {
@@ -25,7 +26,7 @@ const decodeAdContent = (hash: string) => {
 // Component to display user's campaign
 function UserCampaignCard({ campaignId }: { campaignId: bigint }) {
   const { data: campaign, isLoading } = useCampaign(campaignId)
-  const { address } = useAccount()
+  const { userAddress } = useAppContext()
   const { withdrawCampaignBudget, isPending: isWithdrawing } = useWithdrawCampaignBudget()
 
   if (isLoading) {
@@ -58,7 +59,7 @@ function UserCampaignCard({ campaignId }: { campaignId: bigint }) {
   }
 
   // Only show campaigns created by the current user
-  if (typedCampaign.advertiser.toLowerCase() !== address?.toLowerCase()) {
+  if (typedCampaign.advertiser.toLowerCase() !== userAddress?.toLowerCase()) {
     return null
   }
 
@@ -143,10 +144,10 @@ function UserCampaignCard({ campaignId }: { campaignId: bigint }) {
 }
 
 export default function MyAdsPage() {
-  const { address, isConnected } = useAccount()
+  const { userAddress, isLoggedIn } = useAppContext()
   const { data: activeCampaignIds, isLoading: campaignsLoading } = useActiveCampaigns()
-  const { data: userStats } = useUserStats(address)
-  const { data: claimableRewards } = useUserClaimableRewards(address)
+  const { data: userStats } = useUserStats(userAddress as string)
+  const { data: claimableRewards } = useUserClaimableRewards(userAddress as string)
   const { claimUserRewards, isPending: isClaimingRewards, isSuccess: rewardsClaimed } = useClaimUserRewards()
 
   useEffect(() => {
@@ -156,7 +157,7 @@ export default function MyAdsPage() {
   }, [rewardsClaimed])
 
   const handleClaimRewards = () => {
-    if (!isConnected) {
+    if (!isLoggedIn) {
       toast.error("Please connect your wallet first")
       return
     }
@@ -181,30 +182,12 @@ export default function MyAdsPage() {
     ? formatMocaAmount(claimableRewards)
     : '0'
 
-  if (!isConnected) {
+  if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-background">
         {/* Navigation */}
-        <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
-          <div className="container flex h-20 items-center justify-between">
-            <div className="flex items-center gap-6">
-              <Link href="/" className="flex items-center">
-                <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
-                <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
-                <span className="font-black text-2xl tracking-tighter ml-4 text-white">MOCA ADS</span>
-              </Link>
-            </div>
-            <nav className="flex items-center gap-4">
-              <Link
-                href="/"
-                className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all inline-flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                BACK
-              </Link>
-            </nav>
-          </div>
-        </header>
+        <Header />
+
 
         <main className="container py-12">
           <div className="text-center py-24">
@@ -219,6 +202,7 @@ export default function MyAdsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
+      <Header />
       <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
         <div className="container flex h-20 items-center justify-between">
           <div className="flex items-center gap-6">
@@ -322,7 +306,7 @@ export default function MyAdsPage() {
               </div>
             ) : (
               activeCampaignIds.map((campaignId) => (
-                <UserCampaignCard key={campaignId.toString()} campaignId={campaignId} />
+                <UserCampaignCard key={campaignId.toString()} campaignId={campaignId as unknown as bigint} />
               ))
             )}
           </div>

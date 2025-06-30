@@ -140,7 +140,7 @@ function BauhaustTabs() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Minus className="h-6 w-6 text-yellow-400" />
-                  <span>Intentional design "breaks"</span>
+                  <span>Intentional design &quot;breaks&quot;</span>
                 </li>
               </ul>
             </div>
