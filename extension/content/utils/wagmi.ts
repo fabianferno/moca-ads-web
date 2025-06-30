@@ -1,6 +1,5 @@
 import { airConnector } from "@mocanetwork/airkit-connector";
 import { createConfig, http } from "wagmi";
-import { baseSepolia, soneiumMinato } from "wagmi/chains";
 import { BUILD_ENV, mocaTestnet } from "./constants";
 
 // Cache for wagmi configurations to prevent multiple AuthMessageService instances
@@ -21,11 +20,9 @@ export const getConfig = (partnerId: string) => {
   ];
 
   const config = createConfig({
-    chains: [mocaTestnet, baseSepolia, soneiumMinato],
+    chains: [mocaTestnet],
     transports: {
       [mocaTestnet.id]: http(),
-      [baseSepolia.id]: http(),
-      [soneiumMinato.id]: http(),
     },
     connectors,
   });

@@ -4,18 +4,19 @@ import { WagmiProvider } from "wagmi";
 import { LogProvider } from "../contexts/LogProvider";
 import { PartnerContext } from "../contexts/PartnerContext";
 import { getConfig } from "../utils/wagmi";
+import { PARTNER_ID } from "../utils/constants";
 
 const queryClient = new QueryClient();
 
 export const Providers: FC<{
     children: ReactNode;
-    partnerId: string;
-}> = ({ children, partnerId }) => {
+
+}> = ({ children }) => {
     const config = useMemo(() => {
-        return getConfig(partnerId);
-    }, [partnerId]);
+        return getConfig(PARTNER_ID);
+    }, []);
     return (
-        <PartnerContext.Provider value={{ partnerId }}>
+        <PartnerContext.Provider value={{ partnerId: PARTNER_ID }}>
             <LogProvider>
                 <WagmiProvider config={config}>
                     <QueryClientProvider client={queryClient}>

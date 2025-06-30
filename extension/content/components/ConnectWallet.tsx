@@ -2,13 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 import { DefaultLogin } from "./DefaultLogin";
 
-interface NavbarProps {
-    onShowOnboarding?: () => void;
-    userEmail?: string;
+interface ConnectWalletProps {
+
 }
 
-export const Navbar = ({ onShowOnboarding, userEmail }: NavbarProps) => {
-    const { address, isConnected, isConnecting } = useAccount();
+export const ConnectWallet = ({ }: ConnectWalletProps) => {
+    const { address, isConnected } = useAccount();
     const { disconnect, isPending: isDisconnecting } = useDisconnect();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -40,7 +39,7 @@ export const Navbar = ({ onShowOnboarding, userEmail }: NavbarProps) => {
                 <div className="relative" ref={dropdownRef}>
                     <button
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className="flex items-center space-x-2 px-3 py-2 bg-white text-black font-medium rounded border-2 border-black hover:bg-gray-100 transition-colors duration-200 text-sm"
+                        className="cursor-pointer flex items-center space-x-2 px-3 py-2 bg-white text-black font-medium rounded border-2 border-black hover:bg-gray-100 transition-colors duration-200 text-sm"
                     >
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         <span className="text-xs font-mono">
@@ -75,14 +74,13 @@ export const Navbar = ({ onShowOnboarding, userEmail }: NavbarProps) => {
                             <div className="py-1">
                                 <button
                                     onClick={() => {
-                                        onShowOnboarding?.();
                                         setIsDropdownOpen(false);
                                     }}
-                                    className="w-full px-4 py-2 text-left text-xs text-black hover:bg-gray-100 transition-colors duration-200"
+                                    className="w-full cursor-pointer px-4 py-2 text-left text-xs text-black hover:bg-gray-100 transition-colors duration-200"
                                 >
                                     Complete Profile
                                 </button>
-                                <button className="w-full px-4 py-2 text-left text-xs text-black hover:bg-gray-100 transition-colors duration-200">
+                                <button className="w-full cursor-pointer px-4 py-2 text-left text-xs text-black hover:bg-gray-100 transition-colors duration-200">
                                     Settings
                                 </button>
                                 <hr className="my-1 border-gray-200" />
@@ -92,7 +90,7 @@ export const Navbar = ({ onShowOnboarding, userEmail }: NavbarProps) => {
                                         setIsDropdownOpen(false);
                                     }}
                                     disabled={isDisconnecting}
-                                    className="w-full px-4 py-2 text-left text-xs text-red-600 hover:bg-red-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full cursor-pointer px-4 py-2 text-left text-xs text-red-600 hover:bg-red-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isDisconnecting ? "Disconnecting..." : "Disconnect Wallet"}
                                 </button>

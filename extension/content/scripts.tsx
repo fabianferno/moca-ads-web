@@ -1,22 +1,36 @@
 import ReactDOM from 'react-dom/client'
 import ContentApp from './ContentApp'
+import { adInjector } from './utils/adInjector'
 
 let unmount: () => void
 
 if (import.meta.webpackHot) {
   import.meta.webpackHot?.accept()
-  import.meta.webpackHot?.dispose(() => unmount?.())
-}
-
-if (document.readyState === 'complete') {
-  unmount = initial() || (() => {})
-} else {
-  document.addEventListener('readystatechange', () => {
-    if (document.readyState === 'complete') unmount = initial() || (() => {})
+  import.meta.webpackHot?.dispose(() => {
+    unmount?.()
+    adInjector.destroy()
   })
 }
 
-console.log('Hello from content script')
+if (document.readyState === 'complete') {
+  unmount = initial() || (() => { })
+  // Initialize ad injection after a delay to let the page load
+  setTimeout(() => {
+    adInjector.init()
+  }, 2000)
+} else {
+  document.addEventListener('readystatechange', () => {
+    if (document.readyState === 'complete') {
+      unmount = initial() || (() => { })
+      // Initialize ad injection after a delay to let the page load
+      setTimeout(() => {
+        adInjector.init()
+      }, 2000)
+    }
+  })
+}
+
+console.log('MOCA Ads Extension: Content script loaded')
 
 function initial() {
   // Create a new div element and append it to the document's body
@@ -27,7 +41,7 @@ function initial() {
   // Injecting content_scripts inside a shadow dom
   // prevents conflicts with the host page's styles.
   // This way, styles from the extension won't leak into the host page.
-  const shadowRoot = rootDiv.attachShadow({mode: 'open'})
+  const shadowRoot = rootDiv.attachShadow({ mode: 'open' })
 
   const styleElement = document.createElement('style')
   shadowRoot.appendChild(styleElement)

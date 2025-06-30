@@ -2,10 +2,10 @@
   "$schema": "https://json.schemastore.org/chrome-manifest.json",
   "manifest_version": 3,
   "version": "0.0.1",
-  "name": "extension-1",
-  "description": "An Extension.js example.",
+  "name": "moca-ads-extension",
+  "description": "Connect advertisers directly with publishers. No middlemen. Pure web3. Monetize your credentials.",
   "icons": {
-    "48": "images/extension_48.png"
+    "48": "images/moca-ads-logo.png"
   },
   "background": {
     "chromium:service_worker": "background.ts",
@@ -20,6 +20,28 @@
       ],
       "js": [
         "./content/scripts.tsx"
+      ]
+    }
+  ],
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://auth.privy.io/*",
+    "https://*.air3.com/*",
+    "https://*.mocachain.org/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; frame-src 'self' https://auth.privy.io https://*.air3.com https://*.mocachain.org;"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content/*"
+      ],
+      "matches": [
+        "<all_urls>"
       ]
     }
   ],
