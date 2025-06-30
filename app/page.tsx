@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { ArrowRight, Zap, Shield, Globe, Coins } from "lucide-react"
 import { Header } from "@/components/Header"
-import { useActiveCampaigns, useRegisteredDomains, useContractBalance, formatMocaAmount } from "@/components/hooks/useMocaAds"
+import { useActiveCampaigns, useRegisteredDomains, useContractBalance, formatMocaAmount } from "@/hooks/useMocaAds"
 
 function LiveStats() {
   const { data: activeCampaigns, isLoading: campaignsLoading } = useActiveCampaigns()
@@ -64,7 +64,7 @@ export default function LandingPage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h1 className="text-7xl font-black tracking-tighter uppercase leading-none">
-                  MOCA's OPEN
+                  MOCA&apos;s OPEN
                   <br />
                   <span className="text-blue-600">ADVERTISING</span>
                   <br />

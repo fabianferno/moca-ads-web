@@ -2,9 +2,10 @@
 
 import { useState, useMemo } from "react"
 import Link from "next/link"
-import { ArrowLeft, Search, ExternalLink, Eye } from "lucide-react"
+import { Search, ExternalLink, } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { useActiveCampaigns, useCampaign, formatMocaAmount, credentialTypeNames, type Campaign } from "@/components/hooks/useMocaAds"
+import { useActiveCampaigns, useCampaign, formatMocaAmount, credentialTypeNames } from "@/hooks/useMocaAds"
+import { Header } from "@/components/Header"
 
 // Helper function to decode ad content from hash
 const decodeAdContent = (hash: string) => {
@@ -81,7 +82,7 @@ function CampaignCard({ campaignId }: { campaignId: bigint }) {
               </div>
               {typedCampaign.targetCredentials.length > 0 && (
                 <div className="text-sm font-mono text-blue-600">
-                  Targeting: {typedCampaign.targetCredentials.map((cred: any) => credentialTypeNames[cred as keyof typeof credentialTypeNames]).join(', ')}
+                  Targeting: {typedCampaign.targetCredentials.map((cred) => credentialTypeNames[cred as keyof typeof credentialTypeNames]).join(', ')}
                 </div>
               )}
             </div>
@@ -170,32 +171,7 @@ export default function AllAdsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <header className="sticky top-0 z-40 w-full border-b-8 border-black bg-primary">
-        <div className="container flex h-20 items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center">
-              <div className="h-12 w-12 bg-yellow-500 border-4 border-black rotate-12"></div>
-              <div className="h-12 w-12 bg-blue-600 border-4 border-black -ml-6 -rotate-12"></div>
-              <span className="font-black text-2xl tracking-tighter ml-4 text-white">MOCA ADS</span>
-            </Link>
-          </div>
-          <nav className="flex items-center gap-4">
-            <Link
-              href="/create"
-              className="bg-yellow-500 border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all"
-            >
-              CREATE AD
-            </Link>
-            <Link
-              href="/"
-              className="bg-white border-4 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all inline-flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              BACK
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <main className="container py-12">
         <div className="space-y-8">
@@ -263,7 +239,7 @@ export default function AllAdsPage() {
               </div>
             ) : (
               filteredCampaignIds.map((campaignId) => (
-                <CampaignCard key={campaignId.toString()} campaignId={campaignId} />
+                <CampaignCard key={campaignId.toString()} campaignId={campaignId as unknown as bigint} />
               ))
             )}
           </div>

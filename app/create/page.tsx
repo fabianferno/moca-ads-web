@@ -3,20 +3,18 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
-import { ArrowLeft, Eye } from "lucide-react"
+import { Eye } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useAccount } from "wagmi"
-import { useCreateCampaign, useMinCampaignBudget, formatMocaAmount, credentialTypeNames, type CredentialType } from "@/components/hooks/useMocaAds"
+import { useCreateCampaign, useMinCampaignBudget, useUserAddress, formatMocaAmount, credentialTypeNames, type CredentialType } from "@/hooks/useMocaAds"
 import { toast } from "sonner";
-import { Header } from "@/components/Header";
+import { Header } from "@/components/Header"
 
 export default function CreateAdPage() {
-  const { address, isConnected } = useAccount()
+  const { isConnected } = useUserAddress()
   const { data: minBudget } = useMinCampaignBudget()
   const { createCampaign, isPending, isConfirming, isSuccess, error } = useCreateCampaign()
 
@@ -122,9 +120,8 @@ export default function CreateAdPage() {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <Header />
-
       <main className="container py-12">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl font-black tracking-tighter uppercase">CREATE NEW AD</h1>
@@ -135,154 +132,158 @@ export default function CreateAdPage() {
               {/* Form */}
               <div className="bg-white border-8 border-black p-8 shadow-brutal">
                 <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="space-y-6">
-                    <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">AD DETAILS</h2>
+                  {/* Form in Two Columns */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 ">
+                    {/* Left Column */}
+                    <div className="space-y-6">
 
-                    <div className="space-y-2">
-                      <Label htmlFor="title" className="text-lg font-bold">
-                        AD TITLE
-                      </Label>
-                      <Input
-                        id="title"
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        placeholder="Enter compelling ad title"
-                        className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="description" className="text-lg font-bold">
-                        DESCRIPTION
-                      </Label>
-                      <Textarea
-                        id="description"
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        placeholder="Describe your product or service"
-                        className="border-4 border-black text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600 min-h-[120px]"
-                        required
-                      />
-                    </div>
-
-
-
-                    <div className="space-y-2">
-                      <Label htmlFor="imageUrl" className="text-lg font-bold">
-                        IMAGE URL
-                      </Label>
-                      <Input
-                        id="imageUrl"
-                        type="url"
-                        value={formData.imageUrl}
-                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                        placeholder="https://your-image.com/banner.jpg"
-                        className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">AD TYPE</h2>
-                    <RadioGroup
-                      value={formData.adType}
-                      onValueChange={(value) => setFormData({ ...formData, adType: value })}
-                      className="space-y-4"
-                    >
-                      <div className="flex items-center gap-4">
-                        <RadioGroupItem
-                          value="banner"
-                          id="banner"
-                          className="h-6 w-6 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
-                        />
-                        <Label htmlFor="banner" className="text-lg font-mono">
-                          Banner Ad (728x90)
+                      <div className="space-y-2">
+                        <Label htmlFor="title" className="text-lg font-bold">
+                          AD TITLE
                         </Label>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <RadioGroupItem
-                          value="square"
-                          id="square"
-                          className="h-6 w-6 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
+                        <Input
+                          id="title"
+                          value={formData.title}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                          placeholder="Enter compelling ad title"
+                          className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
+                          required
                         />
-                        <Label htmlFor="square" className="text-lg font-mono">
-                          Square Ad (300x300)
-                        </Label>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <RadioGroupItem
-                          value="skyscraper"
-                          id="skyscraper"
-                          className="h-6 w-6 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
-                        />
-                        <Label htmlFor="skyscraper" className="text-lg font-mono">
-                          Skyscraper (160x600)
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
 
-                  <div className="space-y-6">
-                    <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">TARGET CREDENTIALS</h2>
-                    <p className="font-mono text-sm text-gray-600">
-                      Select user credentials to target (optional). Leave empty to target all users.
-                    </p>
-                    <div className="grid grid-cols-2 gap-4">
-                      {Object.entries(credentialTypeNames).map(([value, name]) => {
-                        const credentialValue = parseInt(value) as CredentialType
-                        return (
-                          <div key={value} className="flex items-center space-x-3">
-                            <Checkbox
-                              id={`credential-${value}`}
-                              checked={formData.targetCredentials.includes(credentialValue)}
-                              onCheckedChange={(checked) => handleCredentialToggle(credentialValue, checked as boolean)}
-                              className="h-5 w-5 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
+                      <div className="space-y-2">
+                        <Label htmlFor="description" className="text-lg font-bold">
+                          DESCRIPTION
+                        </Label>
+                        <Textarea
+                          id="description"
+                          value={formData.description}
+                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                          placeholder="Describe your product or service"
+                          className="border-4 border-black text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600 min-h-[120px]"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="imageUrl" className="text-lg font-bold">
+                          IMAGE URL
+                        </Label>
+                        <Input
+                          id="imageUrl"
+                          type="url"
+                          value={formData.imageUrl}
+                          onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                          placeholder="https://your-image.com/banner.jpg"
+                          className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
+                        />
+                      </div>
+
+                      <div className="space-y-6">
+                        <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">BUDGET & DURATION</h2>
+
+                        <div className="grid grid-cols-1 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="budget" className="text-lg font-bold">
+                              BUDGET (MOCA)
+                            </Label>
+                            <Input
+                              id="budget"
+                              type="number"
+                              step="0.001"
+                              value={formData.budget}
+                              onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                              placeholder={minBudget && typeof minBudget === 'bigint' ? formatMocaAmount(minBudget) : "0.01"}
+                              className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
+                              required
                             />
-                            <Label htmlFor={`credential-${value}`} className="font-mono text-sm">
-                              {name}
+                            <p className="text-sm font-mono text-gray-600">
+                              Minimum: {minBudget && typeof minBudget === 'bigint' ? formatMocaAmount(minBudget) : '0.01'} MOCA
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="duration" className="text-lg font-bold">
+                              DURATION (DAYS)
+                            </Label>
+                            <Input
+                              id="duration"
+                              type="number"
+                              value={formData.duration}
+                              onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                              placeholder="30"
+                              className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Column */}
+                    <div className="space-y-6">
+                      <div className="space-y-6">
+                        <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">AD TYPE</h2>
+                        <RadioGroup
+                          value={formData.adType}
+                          onValueChange={(value) => setFormData({ ...formData, adType: value })}
+                          className="space-y-4"
+                        >
+                          <div className="flex items-center gap-4">
+                            <RadioGroupItem
+                              value="banner"
+                              id="banner"
+                              className="h-6 w-6 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
+                            />
+                            <Label htmlFor="banner" className="text-lg font-mono">
+                              Banner Ad (728x90)
                             </Label>
                           </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">BUDGET & DURATION</h2>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="budget" className="text-lg font-bold">
-                          BUDGET (MOCA)
-                        </Label>
-                        <Input
-                          id="budget"
-                          type="number"
-                          step="0.001"
-                          value={formData.budget}
-                          onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                          placeholder={minBudget && typeof minBudget === 'bigint' ? formatMocaAmount(minBudget) : "0.01"}
-                          className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
-                          required
-                        />
-                        <p className="text-sm font-mono text-gray-600">
-                          Minimum: {minBudget && typeof minBudget === 'bigint' ? formatMocaAmount(minBudget) : '0.01'} MOCA
-                        </p>
+                          <div className="flex items-center gap-4">
+                            <RadioGroupItem
+                              value="square"
+                              id="square"
+                              className="h-6 w-6 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
+                            />
+                            <Label htmlFor="square" className="text-lg font-mono">
+                              Square Ad (300x300)
+                            </Label>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <RadioGroupItem
+                              value="skyscraper"
+                              id="skyscraper"
+                              className="h-6 w-6 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
+                            />
+                            <Label htmlFor="skyscraper" className="text-lg font-mono">
+                              Skyscraper (160x600)
+                            </Label>
+                          </div>
+                        </RadioGroup>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="duration" className="text-lg font-bold">
-                          DURATION (DAYS)
-                        </Label>
-                        <Input
-                          id="duration"
-                          type="number"
-                          value={formData.duration}
-                          onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                          placeholder="30"
-                          className="border-4 border-black h-14 text-lg font-mono shadow-brutal focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-600"
-                          required
-                        />
+
+                      <div className="space-y-6">
+                        <h2 className="text-2xl font-black uppercase border-b-4 border-black pb-2">TARGET CREDENTIALS</h2>
+                        <p className="font-mono text-sm text-gray-600">
+                          Select user credentials to target (optional). Leave empty to target all users.
+                        </p>
+                        <div className="grid grid-cols-1 gap-3">
+                          {Object.entries(credentialTypeNames).map(([value, name]) => {
+                            const credentialValue = parseInt(value) as CredentialType
+                            return (
+                              <div key={value} className="flex items-center space-x-3">
+                                <Checkbox
+                                  id={`credential-${value}`}
+                                  checked={formData.targetCredentials.includes(credentialValue)}
+                                  onCheckedChange={(checked) => handleCredentialToggle(credentialValue, checked as boolean)}
+                                  className="h-5 w-5 border-4 border-black data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
+                                />
+                                <Label htmlFor={`credential-${value}`} className="font-mono text-sm">
+                                  {name}
+                                </Label>
+                              </div>
+                            )
+                          })}
+                        </div>
                       </div>
                     </div>
                   </div>
