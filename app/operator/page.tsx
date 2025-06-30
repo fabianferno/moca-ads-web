@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import {
+    // useEffect, 
+    useMemo
+} from "react";
+// import { useRouter } from "next/navigation";
 import { OperatorDashboard } from "@/components/OperatorDashboard";
 import { useIsOperator, useUserAddress, } from "@/hooks/useMocaAds";
 import { ArrowLeft } from "lucide-react";
@@ -9,7 +12,7 @@ import Link from "next/link";
 
 export default function OperatorPage() {
     const { address, isConnected } = useUserAddress();
-    const router = useRouter();
+    // const router = useRouter();
     const isOperator = useIsOperator();
 
     // Check if user is authorized operator
@@ -23,14 +26,14 @@ export default function OperatorPage() {
         ) || isOperator;
     }, [address, isConnected, isOperator]);
 
-    // Redirect if not authorized
-    useEffect(() => {
-        if (!isConnected) {
-            router.push("/?error=wallet-not-connected");
-        } else if (isConnected && !isAuthorizedOperator) {
-            router.push("/?error=unauthorized");
-        }
-    }, [isConnected, isAuthorizedOperator, router]);
+    // // Redirect if not authorized
+    // useEffect(() => {
+    //     if (!isConnected) {
+    //         router.push("/?error=wallet-not-connected");
+    //     } else if (isConnected && !isAuthorizedOperator) {
+    //         router.push("/?error=unauthorized");
+    //     }
+    // }, [isConnected, isAuthorizedOperator, router]);
 
     if (!isConnected) {
         return (

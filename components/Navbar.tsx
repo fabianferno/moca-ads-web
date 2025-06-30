@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useAccount, useDisconnect } from "wagmi";
 import { Button } from "@/components/common/Button";
 import { LoginButton } from "./common/LoginButton";
+import { useUserAddress } from "@/hooks/useMocaAds";
 
 export const Navbar = () => {
-  const { address, isConnected, isConnecting } = useAccount();
-  const { disconnect, isPending: isDisconnecting } = useDisconnect();
+  const { address, isConnected, isLoading: isConnecting } = useUserAddress();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -55,9 +54,8 @@ export const Navbar = () => {
                   {formatAddress(address)}
                 </span>
                 <svg
-                  className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-                    isDropdownOpen ? "rotate-180" : ""
-                  }`}
+                  className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""
+                    }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -80,16 +78,7 @@ export const Navbar = () => {
                       {address}
                     </p>
                   </div>
-                  <button
-                    onClick={() => {
-                      disconnect();
-                      setIsDropdownOpen(false);
-                    }}
-                    disabled={isDisconnecting}
-                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isDisconnecting ? "Disconnecting..." : "Disconnect"}
-                  </button>
+
                 </div>
               )}
             </div>
