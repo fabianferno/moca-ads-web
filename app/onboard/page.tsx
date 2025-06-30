@@ -13,6 +13,7 @@ import {
     type StoredVerification
 } from "@/utils/verificationStorage";
 import { Header } from "@/components/Header";
+import { useUserStats, useClaimUserRewards, formatMocaAmount } from "@/hooks/useMocaAds";
 
 export default function OnboardPage() {
     const { airService, isLoggedIn } = useAppContext();
@@ -23,6 +24,22 @@ export default function OnboardPage() {
     const [loading, setLoading] = useState(true);
     const [activeVerification, setActiveVerification] = useState<VerifierProgramKey | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    // Contract hooks for user rewards
+    const { data: userStats } = useUserStats(userAddress || undefined);
+    const { claimUserRewards, isPending: isClaimPending, isSuccess: isClaimSuccess, error: claimError } = useClaimUserRewards();
+
+    // Mock data for fallback
+    const mockUserStats = {
+        totalEarnings: BigInt("2500000000000000000"), // 2.5 MOCA
+        totalViews: BigInt("1250"), // 1,250 views
+        claimableRewards: BigInt("750000000000000000"), // 0.75 MOCA
+    };
+
+    // Use real data if available, otherwise use mock data
+    const displayStats = userStats && (userStats.totalEarnings > 0 || userStats.totalViews > 0)
+        ? userStats
+        : mockUserStats;
 
     // Load user address and verification status on mount
     useEffect(() => {
@@ -102,7 +119,13 @@ export default function OnboardPage() {
         setActiveVerification(null);
     };
 
-
+    const handleClaimRewards = async () => {
+        try {
+            await claimUserRewards();
+        } catch (error) {
+            console.error('Error claiming rewards:', error);
+        }
+    };
 
     const getVerificationProgress = () => {
         const completed = Object.values(verificationStatuses).filter(Boolean).length;
@@ -113,10 +136,12 @@ export default function OnboardPage() {
     // Loading state
     if (loading) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
-                <div className="text-white text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4 mx-auto"></div>
-                    <p>Loading verification data...</p>
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="bg-white border-8 border-black p-8 shadow-brutal">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-black mb-4 mx-auto"></div>
+                        <div className="text-2xl font-black uppercase">LOADING VERIFICATION DATA...</div>
+                    </div>
                 </div>
             </div>
         );
@@ -125,16 +150,15 @@ export default function OnboardPage() {
     // Not logged in state
     if (!isLoggedIn) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center p-4">
-                <div className="text-white text-center max-w-md">
-                    <h1 className="text-3xl font-bold mb-4 font-cinzel">
-                        Welcome to Moca Ads
-                    </h1>
-                    <p className="text-white/70 mb-6">
-                        Please login to start verifying your credentials and unlock personalized ad experiences.
-                    </p>
-                    <LoginButton />
-                </div>
+            <div className="min-h-screen bg-background">
+                <Header />
+                <main className="container py-12">
+                    <div className="text-center py-24">
+                        <h1 className="text-5xl font-black tracking-tighter uppercase mb-8">CONNECT WALLET</h1>
+                        <p className="text-xl font-mono mb-8">Connect your wallet to start verifying credentials</p>
+                        <LoginButton />
+                    </div>
+                </main>
             </div>
         );
     }
@@ -142,128 +166,206 @@ export default function OnboardPage() {
     const { completed, total } = getVerificationProgress();
 
     return (
-        <div className="min-h-screen bg-black">
+        <div className="min-h-screen bg-background">
             <Header />
-            <div className="max-w-4xl mt-24 mx-auto">
-                {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-white mb-4 font-cinzel">
-                        Credential Verification
-                    </h1>
-                    <p className="text-white/70 text-lg mb-6">
-                        Verify your credentials to unlock personalized ad experiences
-                    </p>
 
-                    {/* Progress Bar */}
-                    <div className="max-w-md mx-auto mb-6">
-                        <div className="flex items-center justify-between text-sm text-white/70 mb-2">
-                            <span>Progress</span>
-                            <span>{completed}/{total} completed</span>
+            <main className="container py-12">
+                <div className="space-y-8">
+                    {/* Header Section */}
+                    <div className="space-y-4 text-center">
+                        <h1 className="text-6xl font-black tracking-tighter uppercase">Monetize your credential for MONIES💸🤑</h1>
+                        <p className="text-xl font-mono max-w-4xl mx-auto">Verify your credentials with the following programs to unlock personalized ad experiences and get paid for your views</p>
+                    </div>
+
+                    {/* User Rewards Section */}
+                    <div className="grid gap-6 md:grid-cols-4">
+                        <div className="bg-green-500 text-white border-8 border-black p-6 shadow-brutal">
+                            <div className="space-y-2">
+                                <div className="text-3xl font-black">{formatMocaAmount(displayStats.totalEarnings)}</div>
+                                <div className="text-sm font-mono uppercase">Total Earned</div>
+                            </div>
                         </div>
-                        <div className="w-full bg-white/20 rounded-full h-2">
-                            <div
-                                className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${(completed / total) * 100}%` }}
-                            />
+                        <div className="bg-blue-600 text-white border-8 border-black p-6 shadow-brutal">
+                            <div className="space-y-2">
+                                <div className="text-3xl font-black">{displayStats.totalViews.toString()}</div>
+                                <div className="text-sm font-mono uppercase">Total Views</div>
+                            </div>
+                        </div>
+                        <div className="bg-purple-600 text-white border-8 border-black p-6 shadow-brutal">
+                            <div className="space-y-2">
+                                <div className="text-3xl font-black">{formatMocaAmount(displayStats.claimableRewards)}</div>
+                                <div className="text-sm font-mono uppercase">Claimable Rewards</div>
+                            </div>
+                        </div>
+                        <div className="bg-white border-8 border-black p-6 shadow-brutal">
+                            <div className="space-y-4">
+                                <div className="text-sm font-mono uppercase text-gray-600 text-center">Actions</div>
+                                <button
+                                    onClick={handleClaimRewards}
+                                    disabled={isClaimPending || displayStats.claimableRewards <= 0}
+                                    className={`w-full border-4 border-black px-4 py-2 font-black text-sm shadow-brutal hover:translate-y-1 hover:shadow-none transition-all uppercase ${isClaimPending || displayStats.claimableRewards <= 0
+                                        ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                                        : 'bg-yellow-500 text-black hover:bg-yellow-600'
+                                        }`}
+                                >
+                                    {isClaimPending ? 'CLAIMING...' : 'CLAIM REWARDS'}
+                                </button>
+                            </div>
                         </div>
                     </div>
 
+                    {/* Progress Overview */}
+                    <div className="grid gap-6 md:grid-cols-3">
+                        <div className="bg-white border-8 border-black p-6 shadow-brutal">
+                            <div className="space-y-2">
+                                <div className="text-3xl font-black">{completed}</div>
+                                <div className="text-sm font-mono uppercase">Verified</div>
+                            </div>
+                        </div>
+                        <div className="bg-blue-600 text-white border-8 border-black p-6 shadow-brutal">
+                            <div className="space-y-2">
+                                <div className="text-3xl font-black">{total - completed}</div>
+                                <div className="text-sm font-mono uppercase">Remaining</div>
+                            </div>
+                        </div>
+                        <div className="bg-yellow-500 border-8 border-black p-6 shadow-brutal">
+                            <div className="space-y-2">
+                                <div className="text-3xl font-black">{Math.round((completed / total) * 100)}%</div>
+                                <div className="text-sm font-mono uppercase">Progress</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* User Address */}
                     {userAddress && (
-                        <p className="text-white/50 text-sm font-mono">
-                            Address: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
-                        </p>
-                    )}
-                </div>
-
-                {/* Error Display */}
-                {errorMessage && (
-                    <div className="max-w-2xl mx-auto mb-6">
-                        <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-300 rounded-lg">
-                            <p>❌ {errorMessage}</p>
+                        <div className="bg-gray-100 border-8 border-black p-4 shadow-brutal">
+                            <div className="text-sm font-mono uppercase text-gray-600">Wallet Address</div>
+                            <div className="text-lg font-black font-mono">{userAddress.slice(0, 6)}...{userAddress.slice(-4)}</div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {/* Verification Cards */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {Object.entries(VERIFIER_PROGRAMS).map(([key, program]) => {
-                        const programKey = key as VerifierProgramKey;
-                        const isVerified = verificationStatuses[programKey];
-                        const isActive = activeVerification === programKey;
+                    {/* Success/Error Messages */}
+                    {isClaimSuccess && (
+                        <div className="bg-green-600 text-white border-8 border-black p-6 shadow-brutal">
+                            <div className="text-xl font-black uppercase mb-2">SUCCESS</div>
+                            <div className="font-mono">Rewards claimed successfully!</div>
+                        </div>
+                    )}
 
-                        return (
-                            <div
-                                key={programKey}
-                                className={`p-6 rounded-xl border-2 transition-all duration-300 ${isVerified
-                                    ? 'bg-green-500/10 border-green-400/50'
-                                    : isActive
-                                        ? 'bg-blue-500/10 border-blue-400/50'
-                                        : 'bg-white/5 border-white/20 hover:border-white/40'
-                                    }`}
-                            >
-                                <div className="text-center">
-                                    {/* Icon and Status */}
-                                    <div className="text-4xl mb-3">
-                                        {isVerified ? '✅' : program.icon}
-                                    </div>
+                    {(errorMessage || claimError) && (
+                        <div className="bg-red-600 text-white border-8 border-black p-6 shadow-brutal">
+                            <div className="text-xl font-black uppercase mb-2">ERROR</div>
+                            <div className="font-mono">{errorMessage || claimError?.message}</div>
+                        </div>
+                    )}
 
-                                    <h3 className="text-white font-bold text-lg mb-2 font-cinzel">
-                                        {program.displayName}
-                                    </h3>
 
-                                    <p className="text-white/70 text-sm mb-4">
-                                        {program.description}
-                                    </p>
 
-                                    {/* Verification Button */}
-                                    {isVerified ? (
-                                        <div className="space-y-2">
-                                            <div className="px-4 py-2 bg-green-500/20 text-green-300 rounded-lg text-sm font-medium">
-                                                ✓ Verified
+                    {/* Verification Cards */}
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {Object.entries(VERIFIER_PROGRAMS).map(([key, program]) => {
+                            const programKey = key as VerifierProgramKey;
+                            const isVerified = verificationStatuses[programKey];
+                            const isActive = activeVerification === programKey;
+
+                            return (
+                                <div
+                                    key={programKey}
+                                    className={`border-8 border-black p-6 shadow-brutal ${isVerified
+                                        ? 'bg-green-500 text-white'
+                                        : 'bg-white'
+                                        }`}
+                                >
+                                    <div className="space-y-4">
+                                        {/* Icon and Status */}
+                                        <div className="text-center">
+                                            <div className="text-4xl mb-3">
+                                                {isVerified ? '✅' : program.icon}
                                             </div>
-                                            {userVerifications[programKey] && (
-                                                <p className="text-white/50 text-xs">
-                                                    {new Date(userVerifications[programKey].verificationTime).toLocaleDateString()}
-                                                </p>
-                                            )}
+                                            <h3 className="text-2xl font-black uppercase mb-2">
+                                                {program.displayName}
+                                            </h3>
+                                            <p className={`font-mono text-sm ${isVerified ? 'text-white/90' : 'text-gray-600'}`}>
+                                                {program.description}
+                                            </p>
                                         </div>
-                                    ) : (
-                                        <VerifyButton
-                                            programId={program.id}
-                                            onVerificationComplete={(results) => handleVerificationComplete(programKey, results)}
-                                            onError={(error) => handleVerificationError(programKey, error)}
-                                            text={isActive ? "Verifying..." : "Verify Now"}
-                                            className={`w-full px-4 py-3 rounded-lg font-bold text-white transition-all duration-200 hover:scale-105 shadow-lg font-cinzel ${isActive
-                                                ? 'bg-blue-600/50 cursor-not-allowed'
-                                                : 'hover:opacity-90'
-                                                }`}
-                                            style={{
-                                                backgroundColor: isActive ? undefined : program.color,
-                                                opacity: isActive ? 0.6 : 1
-                                            }}
-                                        />
-                                    )}
+
+                                        {/* Verification Status/Button */}
+                                        {isVerified ? (
+                                            <div className="space-y-2">
+                                                <div className="bg-white text-green-600 border-4 border-black px-4 py-2 text-center font-black uppercase">
+                                                    VERIFIED
+                                                </div>
+                                                {userVerifications[programKey] && (
+                                                    <div className="text-center">
+                                                        <div className="text-xs font-mono text-white/80">
+                                                            {new Date(userVerifications[programKey].verificationTime).toLocaleDateString()}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <VerifyButton
+                                                programId={program.id}
+                                                onVerificationComplete={(results) => handleVerificationComplete(programKey, results)}
+                                                onError={(error) => handleVerificationError(programKey, error)}
+                                                text={isActive ? "VERIFYING..." : "VERIFY NOW"}
+                                                className={`w-full border-4 border-black px-4 py-3 font-black text-lg shadow-brutal hover:translate-y-1 hover:shadow-none transition-all uppercase ${isActive
+                                                    ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                                                    : 'bg-red-600 text-white hover:bg-red-700'
+                                                    }`}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                        {/* Coming Soon Card */}
+                        <div className="bg-gray-100 border-8 border-black p-6 shadow-brutal">
+                            <div className="space-y-4">
+                                {/* Icon and Status */}
+                                <div className="text-center">
+                                    <div className="text-4xl mb-3">🚀</div>
+                                    <h3 className="text-2xl font-black uppercase mb-2">
+                                        MORE COMING SOON
+                                    </h3>
+                                    <p className="font-mono text-sm text-gray-600">
+                                        Additional credential verification programs will be available soon
+                                    </p>
+                                </div>
+
+                                {/* Coming Soon Badge */}
+                                <div className="space-y-2">
+                                    <div className="bg-gray-400 text-gray-700 border-4 border-black px-4 py-2 text-center font-black uppercase">
+                                        COMING SOON
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-xs font-mono text-gray-500">
+                                            Stay tuned for more verification options
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        );
-                    })}
-                </div>
-
-                {/* Completion Status */}
-                {completed === total && (
-                    <div className="text-center">
-                        <div className="max-w-md mx-auto p-6 bg-green-500/10 border border-green-400/30 rounded-xl">
-                            <div className="text-4xl mb-4">🎉</div>
-                            <h3 className="text-green-300 font-bold text-xl mb-2 font-cinzel">
-                                All Credentials Verified!
-                            </h3>
-                            <p className="text-green-300/70">
-                                You can now access all personalized ad features.
-                            </p>
                         </div>
                     </div>
-                )}
-            </div>
+
+                    {/* Completion Status */}
+                    {completed === total && (
+                        <div className="bg-green-500 text-white border-8 border-black p-8 shadow-brutal">
+                            <div className="text-center space-y-4">
+                                <div className="text-6xl">🎉</div>
+                                <h3 className="text-3xl font-black uppercase">
+                                    ALL CREDENTIALS VERIFIED!
+                                </h3>
+                                <p className="text-xl font-mono">
+                                    You can now access all personalized ad features.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </main>
         </div>
     );
 }
