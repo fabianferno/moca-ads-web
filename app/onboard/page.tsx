@@ -218,25 +218,25 @@ export default function OnboardPage() {
 
                     {/* User Rewards Section */}
                     <div className="grid gap-6 md:grid-cols-4">
-                        <div className="bg-green-500 text-white border-8 border-black p-6 shadow-brutal">
+                        <div className="bg-white text-black border-8 border-black p-6 shadow-brutal">
                             <div className="space-y-2">
                                 <div className="text-3xl font-black">{formatMocaAmount(displayStats.totalEarnings)}</div>
                                 <div className="text-sm font-mono uppercase">Total Earned</div>
                             </div>
                         </div>
-                        <div className="bg-blue-600 text-white border-8 border-black p-6 shadow-brutal">
+                        <div className="bg-white text-black border-8 border-black p-6 shadow-brutal">
                             <div className="space-y-2">
                                 <div className="text-3xl font-black">{displayStats.totalViews.toString()}</div>
                                 <div className="text-sm font-mono uppercase">Total Ad Views</div>
                             </div>
                         </div>
-                        <div className="bg-purple-600 text-white border-8 border-black p-6 shadow-brutal">
+                        <div className="bg-white text-black border-8 border-black p-6 shadow-brutal">
                             <div className="space-y-2">
                                 <div className="text-3xl font-black">{formatMocaAmount(displayStats.claimableRewards)}</div>
                                 <div className="text-sm font-mono uppercase">Claimable Rewards</div>
                             </div>
                         </div>
-                        <div className="bg-white border-8 border-black p-6 shadow-brutal">
+                        <div className="bg-white text-black border-8 border-black p-6 shadow-brutal">
                             <div className="space-y-4">
                                 <div className="text-sm font-mono uppercase text-gray-600 text-center">Actions</div>
                                 <button
