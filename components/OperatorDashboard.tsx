@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useAccount } from "wagmi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,11 +24,12 @@ import {
     Zap,
     FileText
 } from "lucide-react";
+import { useUserAddress } from "@/hooks/useMocaAds";
 
 type TabType = "overview" | "batch-rewards" | "settings";
 
 export function OperatorDashboard() {
-    const { address } = useAccount();
+    const { address } = useUserAddress();
     const [activeTab, setActiveTab] = useState<TabType>("overview");
 
     // Contract data
