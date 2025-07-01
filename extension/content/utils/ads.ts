@@ -26,79 +26,45 @@ export const HARDCODED_ADS: AdData[] = [
     description:
       "The future of decentralized gaming and metaverse. Earn MOCA tokens while playing!",
     imageUrl:
-      "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=400&h=200&fit=crop",
+      "https://i.pinimg.com/originals/59/ac/95/59ac959b11d51f838b8b8ccd7f7db223.gif",
     ctaText: "Join Now",
     targetUrl: "https://mocachain.org",
     category: "crypto",
     sponsor: "MOCA Network",
     targeting: {
-      above18: true, // Gaming/crypto requires adult audience
+      above18: false, // Gaming/crypto requires adult audience
       isUSResident: true, // US-focused launch
       isMidIncomeBracket: true, // Target middle income for gaming adoption
     },
   },
   {
     id: "ad-2",
-    title: "Trade Crypto on DEX",
+    title: "Metamask",
     description:
-      "Experience lightning-fast trades with minimal fees on our decentralized exchange.",
+      "Metamask is launching credit cards with MasterCard and giving away 15 euros for the first 100 users who sign up",
     imageUrl:
-      "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=400&h=200&fit=crop",
-    ctaText: "Start Trading",
+      "https://liquidity-provider.com/app/uploads/2024/08/lp_16.08-2.png",
+    ctaText: "Sign Up for metal credit card",
     targetUrl: "#",
     category: "defi",
-    sponsor: "DefiSwap",
+    sponsor: "Metamask",
     targeting: {
-      above18: true, // Financial services require adult audience
-      isUSResident: false, // Available globally except US due to regulations
-      isMidIncomeBracket: false, // Target higher income for trading
-    },
-  },
-  {
-    id: "ad-3",
-    title: "NFT Collection Launch",
-    description:
-      "Discover exclusive NFTs from top artists. Limited time mint available now!",
-    imageUrl:
-      "https://images.unsplash.com/photo-1644361567977-6b530a51148c?w=400&h=200&fit=crop",
-    ctaText: "Mint NFT",
-    targetUrl: "#",
-    category: "nft",
-    sponsor: "CryptoArt",
-    targeting: {
-      above18: true, // Art collecting typically adult audience
-      // No geographic restrictions
-      // No income restrictions - NFTs appeal to various income levels
-    },
-  },
-  {
-    id: "ad-4",
-    title: "Web3 Development Course",
-    description:
-      "Learn to build dApps from scratch. Complete bootcamp with real projects.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop",
-    ctaText: "Enroll Now",
-    targetUrl: "#",
-    category: "education",
-    sponsor: "Web3Academy",
-    targeting: {
-      above18: false, // Educational content suitable for all ages
-      isUSResident: true, // English-language course
-      isMidIncomeBracket: true, // Affordable education pricing
+      above18: false, // Financial services require adult audience
+      isUSResident: true, // Available globally except US due to regulations
+      isMidIncomeBracket: true, // Target higher income for trading
     },
   },
   {
     id: "ad-5",
-    title: "Yield Farming Protocol",
+    title: "OnlyFans",
     description:
-      "Earn up to 12% APY on your crypto holdings. Secure and audited smart contracts.",
+      "OnlyFans is a subscription platform where creators monetize exclusive content directly with their audience.",
     imageUrl:
-      "https://images.unsplash.com/photo-1640340434855-6084b1f4901c?w=400&h=200&fit=crop",
-    ctaText: "Stake Now",
+      "https://images.seeklogo.com/logo-png/38/1/onlyfans-logo-png_seeklogo-382790.png",
+    ctaText: "Curious to see?",
     targetUrl: "#",
-    category: "defi",
-    sponsor: "YieldMax",
+    category: "nft",
+    sponsor: "OnlyFans",
     targeting: {
       above18: true, // Financial services require adult audience
       isUSResident: false, // Not available in US due to regulations

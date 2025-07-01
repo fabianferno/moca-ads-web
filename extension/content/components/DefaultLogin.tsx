@@ -18,7 +18,7 @@ export const DefaultLogin = () => {
                     });
                 }}
                 disabled={isConnecting}
-                className="px-4 py-2 bg-white text-black font-medium rounded border-2 border-black hover:bg-gray-100 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="bg-green-500 text-black border-4 hover:bg-red-500 border-black px-4 py-2 font-bold shadow-brutal hover:translate-y-1 hover:shadow-none transition-all"
             >
                 {isConnecting ? (
                     <div className="flex items-center justify-center">

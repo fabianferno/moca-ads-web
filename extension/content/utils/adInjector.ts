@@ -26,9 +26,16 @@ export class AdInjector {
 
   setUserAddress(userAddress: string | null) {
     this.currentUserAddress = userAddress;
-    // Re-inject ads with new user targeting when user changes
-    if (this.isInitialized && userAddress) {
-      this.reinjectAds();
+
+    if (userAddress) {
+      // User connected - re-inject ads with new user targeting
+      if (this.isInitialized) {
+        this.reinjectAds();
+      }
+    } else {
+      // User disconnected - clear all ads
+      console.log("MOCA Ads: User disconnected, clearing all ads");
+      this.clearAllAds();
     }
   }
 
@@ -87,6 +94,12 @@ export class AdInjector {
 
   private injectAds() {
     try {
+      // Only inject ads if user is connected
+      if (!this.currentUserAddress) {
+        console.log("MOCA Ads: No user connected, skipping ad injection");
+        return;
+      }
+
       // Skip injection on certain domains/pages
       if (this.shouldSkipInjection()) {
         return;
@@ -158,6 +171,7 @@ export class AdInjector {
     const skipPatterns = [
       "chrome-extension://",
       "moz-extension://",
+      "accounts.google.com",
       "localhost",
       "127.0.0.1",
       "admin",
@@ -196,11 +210,13 @@ export class AdInjector {
     // Determine ad variant based on position and context
     let variant: "banner" | "inline" | "sidebar" = "inline";
 
-    if (index === 0 && injectionPoint.tagName === "MAIN") {
-      variant = "banner";
-    } else if (this.isSidebarLocation(injectionPoint)) {
-      variant = "sidebar";
-    }
+    variant = "inline";
+
+    // if (index === 0 && injectionPoint.tagName === "MAIN") {
+    //   variant = "banner";
+    // } else if (this.isSidebarLocation(injectionPoint)) {
+    //   variant = "sidebar";
+    // }
 
     // Insert ad container into the page
     this.insertAdContainer(adContainer, injectionPoint, index);
@@ -347,6 +363,16 @@ export class AdInjector {
 
     // Inject fresh ads
     this.injectAds();
+  }
+
+  private clearAllAds() {
+    // Clean up all injected ads
+    this.injectedAds.forEach((injectedAd) => {
+      injectedAd.root.unmount();
+      injectedAd.element.remove();
+    });
+    this.injectedAds.clear();
+    console.log("MOCA Ads: All ads cleared");
   }
 }
 

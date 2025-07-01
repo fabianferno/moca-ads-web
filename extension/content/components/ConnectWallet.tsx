@@ -39,7 +39,7 @@ export const ConnectWallet = ({ }: ConnectWalletProps) => {
                 <div className="relative" ref={dropdownRef}>
                     <button
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className="cursor-pointer flex items-center space-x-2 px-3 py-2 bg-white text-black font-medium rounded border-2 border-black hover:bg-gray-100 transition-colors duration-200 text-sm"
+                        className="shadow-brutal cursor-pointer flex items-center space-x-2 px-3 py-2 bg-white text-black font-medium rounded border-2 border-black hover:bg-gray-100 transition-colors duration-200 text-sm"
                     >
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         <span className="text-xs font-mono">

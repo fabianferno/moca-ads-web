@@ -5,7 +5,10 @@
   "name": "moca-ads-extension",
   "description": "Connect advertisers directly with publishers. No middlemen. Pure web3. Monetize your credentials.",
   "icons": {
-    "48": "images/moca-ads-logo.png"
+    "16": "images/moca-ads-logo.png",
+    "48": "images/moca-ads-logo.png",
+    "128": "images/moca-ads-logo.png",
+    "512": "images/moca-ads-logo.png"
   },
   "background": {
     "chromium:service_worker": "background.ts",
@@ -25,12 +28,14 @@
   ],
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "cookies"
   ],
   "host_permissions": [
     "https://auth.privy.io/*",
     "https://*.air3.com/*",
-    "https://*.mocachain.org/*"
+    "https://*.mocachain.org/*",
+    "https://*.moca-ads.com/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; frame-src 'self' https://auth.privy.io https://*.air3.com https://*.mocachain.org;"
