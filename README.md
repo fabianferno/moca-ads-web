@@ -1,5 +1,7 @@
 #  MOCA Ads - Monetize Your Credentials
 
+🏆 Winner, Moca Network Identity House hackathon, Cannes, France.
+
 A revolutionary Web3 advertising platform built on the MOCA blockchain that connects advertisers directly with publishers using privacy-preserving credential-based targeting.
 
 ![image](https://github.com/user-attachments/assets/5bfaf6d3-ee22-42a6-bc40-d978854f82e0)
@@ -258,7 +260,7 @@ function getMocaAdsVerifications() {
 }
 ```
 
-See [`docs/chrome-extension-integration.md`](docs/chrome-extension-integration.md) for complete integration guide.
+See [`docs/chrome-extension-integration.md`](docs/chrome-extension-integration.md) for complete integration guide. The extension's source is in [`extension/`](extension/).
 
 ## 🚀 Deployment
 
@@ -312,7 +314,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **MOCA Network**: [https://moca.network](https://moca.network)
 - **Documentation**: [https://docs.moca-ads.com](https://docs.moca-ads.com)
-- **Chrome Extension**: [Chrome Web Store Link](#)
+- **Chrome Extension**: [`extension/`](extension/)
 - **Discord**: [Join our community](#)
 - **Twitter**: [@MocaAds](#)
 

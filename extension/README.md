@@ -1,35 +1,24 @@
-# extension-1
+# MOCA Ads Chrome extension
 
-> An Extension.js example.
+The browser side of MOCA Ads. It signs users in with Moca AIR Kit, runs credential verification through the AIR credential widget, and injects credential-targeted ad banners into the pages you visit. Verification results are written to the `moca_ads_verifications` cookie, which the web app reads (see [`../docs/chrome-extension-integration.md`](../docs/chrome-extension-integration.md)).
 
-## Available Scripts
+Built with [Extension.js](https://extension.js.org), React 18, Tailwind CSS 4, wagmi and the Moca AIR SDKs.
 
-In the project directory, you can run the following scripts:
+## Layout
 
-### npm dev
+- `manifest.json`: MV3 manifest (permissions, content script, CSP)
+- `background.ts`: cookie monitoring
+- `content/`: the injected React app (login, credentials form, verification, ad banner)
+- `content/utils/constants.ts`: partner ID, verifier DID, chain and contract config
 
-**Development Mode**: This command runs your extension in development mode. It will launch a new browser instance with your extension loaded. The page will automatically reload whenever you make changes to your code, allowing for a smooth development experience.
-
-```bash
-npm dev
-```
-
-### npm start
-
-**Production Preview**: This command runs your extension in production mode. It will launch a new browser instance with your extension loaded, simulating the environment and behavior of your extension as it will appear once published.
+## Setup
 
 ```bash
-npm start
+cd extension
+npm install
+echo "EXTENSION_PUBLIC_MOCA_VERIFIER_API_KEY=your-verifier-api-key" > .env
+npm run dev     # opens a browser with the extension loaded
+npm run build   # production build in dist/
 ```
 
-### npm build
-
-**Build for Production**: This command builds your extension for production. It optimizes and bundles your extension, preparing it for deployment to the target browser's store.
-
-```bash
-npm build
-```
-
-## Learn More
-
-To learn more about creating cross-browser extensions with Extension.js, visit the [official documentation](https://extension.js.org).
+The verifier API key comes from the Moca AIR developer dashboard. Don't commit it.

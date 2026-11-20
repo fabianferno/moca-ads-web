@@ -5,7 +5,7 @@ import { BUILD_ENV as AIRKIT_BUILD_ENV } from "@mocanetwork/airkit";
 export const PARTNER_ID = "8c8cd8b3-e234-429c-90ba-c41357561e1b";
 export const VERIFIER_DID =
   "did:key:81eGhRRY6eo564z6fyjZhfVb5sYjr8ELd5gxmchYiWgSJgETX57ZUKQYF7JBQYmaGnRxqvovZtCRTwbBiuJBDbh8LR";
-export const VERIFIER_API_KEY = "REDACTED_MOCA_VERIFIER_API_KEY";
+export const VERIFIER_API_KEY = process.env.EXTENSION_PUBLIC_MOCA_VERIFIER_API_KEY ?? "";
 
 export const mocaTestnet: Chain & {
   contracts: { multicall3: { address: `0x${string}`; blockCreated: number } };
